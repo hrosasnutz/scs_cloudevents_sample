@@ -1,6 +1,5 @@
 package io.cloudevents.scs_cloudevents_sample.listener
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.cloudevents.CloudEvent
 import io.cloudevents.scs_cloudevents_sample.dto.command.CreateCustomerCommand
 import io.cloudevents.scs_cloudevents_sample.dto.event.CustomerCreatedEvent
@@ -43,14 +42,4 @@ class CustomerListener(
             .then()
         }
     }
-    
-    // @Bean
-    // fun saveCustomer(): (CloudEvent) -> Message<CloudEvent> {
-    //     return {
-    //         logger.debug { "To save Customer: $it" }
-    //         val cmd = ToCloudEventMessage.toPojo(it, objectMapper, CreateCustomerCommand::class.java)
-    //         val evt = customerService.save(cmd!!)
-    //         ToCloudEventMessage.to(evt, objectMapper)
-    //     }
-    // }
 }
