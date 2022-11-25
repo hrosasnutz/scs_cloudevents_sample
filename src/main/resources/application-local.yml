@@ -1,0 +1,22 @@
+spring:
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers:
+            - kafka1:9291
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+    database: h2
+    show-sql: true
+
+logging:
+  level:
+    root: info
+    org.apache.kafka: error
+    io.cloudevents.scs_cloudevents_sample: debug
+    
+server:
+  port: 8000

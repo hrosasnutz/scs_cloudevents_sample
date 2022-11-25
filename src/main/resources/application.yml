@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: scs_cloudevents_sample
+  cloud:
+    function:
+      definition: saveCustomer;logSavedCustomer
+    stream:
+      output-bindings: httpCustomer
+      bindings:
+        httpCustomer-out-0:
+          destination: io.cloudevents.customers.cmd
+        saveCustomer-in-0:
+          destination: io.cloudevents.customers.cmd
+          group: savers
+        saveCustomer-out-0:
+          destination: io.cloudevents.customers
+        logSavedCustomer-in-0:
+          destination: io.cloudevents.customers
+          group: loggers
