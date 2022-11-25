@@ -13,7 +13,7 @@ spring:
           destination: io.cloudevents.customer.commands
           group: savers
         saveCustomer-out-0:
-          destination: io.cloudevents.customers
+          destination: io.cloudevents.customer.events
         logSavedCustomer-in-0:
-          destination: io.cloudevents.customers
+          destination: io.cloudevents.customer.events
           group: loggers
