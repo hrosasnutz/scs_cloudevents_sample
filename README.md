@@ -1,92 +1,51 @@
-# scs_cloudevents_sample
+
+# Cloud Events with Spring Cloud Stream sample project
+
+This is a sample project on use io.cloudevents and spring cloud stream for streaming events on kafka binder. This project was build with java 17.
 
 
+## Host
 
-## Getting started
+To run this project, you will need to add the following dns to hosts file
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+`127.0.0.1 kafka`
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
 
-## Add your files
+## Usage/Examples
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
+Start docker stack with next command:
+```bash
+docker-compose up -d
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/hrosasnutz.1991/scs_cloudevents_sample.git
-git branch -M main
-git push -uf origin main
+Build application:
+```bash
+gradlew build -x test
+java -jar build/libs/scs_cloudevents_sample-0.0.1-SNAPSHOT.jar
+```
+Create a customer:
+```bash
+curl -X POST -H "content-type: application/json" http://localhost:8000/api/customers -d '{"name":"John Doe","vip":false,"birthdate":"2002-10-13"}'
+```
+Sample response:
+```log
+2022-11-25 14:38:50.915 DEBUG 13040 --- [nio-8000-exec-1] i.c.s.service.CustomerService            : Send command: CreateCustomerCommand(name=John Doe, vip=false, birthdate=2002-10-13)
+2022-11-25 14:38:50.970 DEBUG 13040 --- [container-0-C-1] i.c.s.listener.CustomerListener          : To save Customer: GenericMessage [payload=CloudEvent{id='e31b1956-dea9-47bd-91ed-c6509659ed4c', source=/api/customers, type='io.cloudevents.scs_cloudevents_sample.dto.command.CreateCustomerCommand', datacontenttype='application/json', subject='customer', time=2022-11-25T14:38:50.917908300-05:00, data=BytesCloudEventData{value=[123, 34, 110, 97, 109, 101, 34, 58, 34, 74, 111, 104, 110, 32, 68, 111, 101, 34, 44, 34, 118, 105, 112, 34, 58, 102, 97, 108, 115, 101, 44, 34, 98, 105, 114, 116, 104, 100, 97, 116, 101, 34, 58, 34, 50, 48, 48, 50, 45, 49, 48, 45, 49, 51, 34, 125]}, extensions={}}, headers={ce-datacontenttype=application/json, ce-subject=customer, ce-specversion=1.0, deliveryAttempt=1, ce-id=e31b1956-dea9-47bd-91ed-c6509659ed4c, kafka_timestampType=CREATE_TIME, ce-time=2022-11-25T14:38:50.9179083-05:00, kafka_receivedMessageKey=[B@352a9a12, kafka_receivedTopic=io.cloudevents.customer.commands, target-protocol=kafka, ce-source=/api/customers, kafka_offset=0, scst_nativeHeadersPresent=true, ce-type=io.cloudevents.scs_cloudevents_sample.dto.command.CreateCustomerCommand, message-type=cloudevent, kafka_consumer=org.apache.kafka.clients.consumer.KafkaConsumer@2d7c9222, source-type=kafka, id=f56957bf-efa1-32cc-f009-8693834e3709, kafka_receivedPartitionId=0, contentType=application/json, kafka_receivedTimestamp=1669405130933, kafka_groupId=savers, timestamp=1669405130970}]
+Hibernate: select customer0_.uuid as uuid1_0_0_, customer0_.birthdate as birthdat2_0_0_, customer0_.name as name3_0_0_, customer0_.vip as vip4_0_0_ from customer customer0_ where customer0_.uuid=?
+2022-11-25 14:38:51.035  INFO 13040 --- [container-0-C-1] i.c.s.service.CustomerService            : New customer was created with 53a0261e-b448-46e8-b0ad-c1216d570147
+Hibernate: insert into customer (birthdate, name, vip, uuid) values (?, ?, ?, ?)
+2022-11-25 14:38:51.065 DEBUG 13040 --- [container-0-C-1] i.c.s.listener.CustomerListener          : customer created message: GenericMessage [payload=CloudEvent{id='53a0261e-b448-46e8-b0ad-c1216d570147', source=/api/customers/53a0261e-b448-46e8-b0ad-c1216d570147, type='io.cloudevents.scs_cloudevents_sample.dto.event.CustomerCreatedEvent', datacontenttype='application/json', subject='customer', time=2022-11-25T14:38:51.050435500-05:00, data=BytesCloudEventData{value=[123, 34, 117, 117, 105, 100, 34, 58, 34, 53, 51, 97, 48, 50, 54, 49, 101, 45, 98, 52, 52, 56, 45, 52, 54, 101, 56, 45, 98, 48, 97, 100, 45, 99, 49, 50, 49, 54, 100, 53, 55, 48, 49, 52, 55, 34, 44, 34, 110, 97, 109, 101, 34, 58, 34, 74, 111, 104, 110, 32, 68, 111, 101, 34, 44, 34, 118, 105, 112, 34, 58, 102, 97, 108, 115, 101, 44, 34, 98, 105, 114, 116, 104, 100, 97, 116, 101, 34, 58, 34, 50, 48, 48, 50, 45, 49, 48, 45, 49, 51, 34, 125]}, extensions={}}, headers={ce-datacontenttype=application/json, ce-subject=customer, ce-specversion=1.0, ce-id=53a0261e-b448-46e8-b0ad-c1216d570147, deliveryAttempt=1, kafka_timestampType=CREATE_TIME, ce-time=2022-11-25T14:38:51.0504355-05:00, kafka_receivedMessageKey=[B@4df8273c, kafka_receivedTopic=io.cloudevents.customers, ce-source=/api/customers/53a0261e-b448-46e8-b0ad-c1216d570147, kafka_offset=0, scst_nativeHeadersPresent=true, ce-type=io.cloudevents.scs_cloudevents_sample.dto.event.CustomerCreatedEvent, kafka_consumer=org.apache.kafka.clients.consumer.KafkaConsumer@7ecafae8, id=a12f1266-c566-d374-041d-efa8f2c13191, kafka_receivedPartitionId=0, contentType=application/json, kafka_receivedTimestamp=1669405131056, kafka_groupId=loggers, timestamp=1669405131064}]
+2022-11-25 14:38:51.070  INFO 13040 --- [container-0-C-1] i.c.s.listener.CustomerListener          : New customer created: CustomerCreatedEvent(uuid=53a0261e-b448-46e8-b0ad-c1216d570147, name=John Doe, vip=false, birthdate=2002-10-13)
 ```
 
-## Integrate with your tools
+## Acknowledgements
 
-- [ ] [Set up project integrations](https://gitlab.com/hrosasnutz.1991/scs_cloudevents_sample/-/settings/integrations)
+- [Spring.io](https://spring.io/)
+- [Spring Cloud Stream doc](https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/)
+- [CloudEvents.io](https://cloudevents.io/)
+- [CloudEvents sdk Java doc](https://cloudevents.github.io/sdk-java/)
 
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
 
 ## License
-For open source projects, say how it is licensed.
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+[Apache License](https://choosealicense.com/licenses/apache-2.0/)
+

@@ -8,9 +8,9 @@ spring:
       output-bindings: httpCustomer
       bindings:
         httpCustomer-out-0:
-          destination: io.cloudevents.customers.cmd
+          destination: io.cloudevents.customer.commands
         saveCustomer-in-0:
-          destination: io.cloudevents.customers.cmd
+          destination: io.cloudevents.customer.commands
           group: savers
         saveCustomer-out-0:
           destination: io.cloudevents.customers

@@ -4,7 +4,7 @@ spring:
       kafka:
         binder:
           brokers:
-            - kafka1:9291
+            - kafka:9291
   jpa:
     generate-ddl: true
     hibernate:
