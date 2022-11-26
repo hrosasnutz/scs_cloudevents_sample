@@ -6,6 +6,7 @@ plugins {
 	kotlin("jvm") version "1.6.21"
 	kotlin("plugin.spring") version "1.6.21"
 	kotlin("plugin.jpa") version "1.6.21"
+	jacoco
 }
 
 group = "io.cloudevents"
@@ -42,6 +43,8 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("io.projectreactor:reactor-test")
 	testImplementation("org.springframework.kafka:spring-kafka-test")
+	testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
+	testImplementation("io.github.serpro69:kotlin-faker:1.12.0")
 
 	implementation("io.cloudevents:cloudevents-core:${property("cloudEventsVersion")}")
 	implementation("io.cloudevents:cloudevents-spring:${property("cloudEventsVersion")}")
@@ -65,4 +68,17 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+tasks.test {
+	finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.jacocoTestReport {
+	dependsOn(tasks.test)
+	reports {
+		xml.required.set(false)
+		csv.required.set(false)
+		html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+	}
 }

@@ -25,11 +25,10 @@ class CustomerListener(
     fun saveCustomer(): (Flux<Message<CloudEvent>>) -> Flux<Message<CloudEvent>> {
         return { ce -> ce
             .doOnNext { logger.debug { "To save Customer: $it" } }
-            .mapNotNull { msg -> cloudEventMessageMapper.toPojo(msg.payload, CreateCustomerCommand::class.java) }
-            .flatMap { cmd -> Mono.fromCallable { 
-                    customerService.save(cmd!!)
-                }
-            }.map { evt -> cloudEventMessageMapper.to(evt) }
+            .mapNotNull { cloudEventMessageMapper.toPojo(it.payload, CreateCustomerCommand::class.java) }
+            .flatMap { Mono.fromCallable { customerService.save(it!!) } }
+            // .map { customerService.save(it!!) }
+            .map { cloudEventMessageMapper.to(it) }
         }
     }
 
