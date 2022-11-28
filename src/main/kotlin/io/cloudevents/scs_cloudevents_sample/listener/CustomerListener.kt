@@ -27,7 +27,6 @@ class CustomerListener(
             .doOnNext { logger.debug { "To save Customer: $it" } }
             .mapNotNull { cloudEventMessageMapper.toPojo(it.payload, CreateCustomerCommand::class.java) }
             .flatMap { Mono.fromCallable { customerService.save(it!!) } }
-            // .map { customerService.save(it!!) }
             .map { cloudEventMessageMapper.to(it) }
         }
     }
