@@ -47,7 +47,7 @@ dependencies {
 
 	implementation("io.cloudevents:cloudevents-core:${property("cloudEventsVersion")}")
 	implementation("io.cloudevents:cloudevents-spring:${property("cloudEventsVersion")}")
-	implementation("io.cloudevents:cloudevents-kafka:${property("cloudEventsVersion")}")
+	// implementation("io.cloudevents:cloudevents-kafka:${property("cloudEventsVersion")}")
 	implementation("io.cloudevents:cloudevents-json-jackson:${property("cloudEventsVersion")}")
 	implementation("io.github.microutils:kotlin-logging-jvm:3.0.4")
 }
