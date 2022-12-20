@@ -20,7 +20,7 @@ docker-compose up -d
 Build application:
 ```bash
 gradlew build -x test
-java -jar build/libs/scs_cloudevents_sample-0.0.1-SNAPSHOT.jar
+java -jar build/libs/scs_cloudevents_sample-0.0.1-SNAPSHOT.jar --spring.profiles.active=local
 ```
 Create a customer:
 ```bash
